@@ -1,4 +1,6 @@
 library(ggplot2)
+library(dplyr)
+
 
 setwd('L:/Postpartum Discharge Education/pde.spring.2017/data')
 
@@ -16,11 +18,14 @@ hosp$percent_lab <- paste(hosp$percent,"%", sep="")
 
 hosp$hosp_cat <- factor(hosp$hosp_cat, levels=c("Under 1000", "1001-2999","3000-4999", "5000+"))
 
+hosp$pos <- (cumsum(hosp$percent)-hosp$percent/2)  #calculate label position
+
+
 pdf("hospital counts by delivery category.pdf",width=7,height=5)
 c <- ggplot(hosp, aes(x=factor(1), y=as.numeric(n),fill=factor(hosp_cat),label=percent))
 c<-c+geom_bar(stat="identity",width=1,position="fill")
 c <-c + coord_polar(theta="y")
-c<-c+geom_text(aes(x=factor(1), y=percent, label=percent,ymax=percent),position=position_fill(width=1))
+c<-c+geom_text(aes(x=factor(1), y=percent, label=percent_lab,ymax=percent),position=position_fill(vjust = 0.5))
 c
 dev.off()
 
