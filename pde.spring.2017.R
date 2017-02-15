@@ -25,64 +25,96 @@ pdf("hospital counts by delivery category.pdf",width=7,height=5)
 c <- ggplot(hosp, aes(x=factor(1), y=as.numeric(n),fill=factor(hosp_cat),label=percent))
 c<-c+geom_bar(stat="identity",width=1,position="fill")
 c <-c + coord_polar(theta="y")
-c<-c+geom_text(aes(x=factor(1), y=percent, label=percent_lab,ymax=percent),position=position_fill(vjust = 0.5))
+c<-c+geom_text(aes(x=factor(1), y=percent, label=percent_lab),position=position_fill(vjust = 0.5)) + ylab("n = 17")
+c <- c + scale_fill_discrete(name="Annual Birth Volume")
+c <- c + theme(axis.text = element_blank(),axis.ticks = element_blank(), panel.grid  = element_blank(),  axis.title.y = element_blank())
 c
 dev.off()
 
 
-#NICU Level
-hosp_cat<-c("Level I", "Level II","Level III", "Level IV")
-n<-as.numeric(c(2,8,11,2))
+
+
+#How many RNs does your hospital anticipate will need education about maternal morbidity and mortality and the AWHONN's POST-BIRTH Warning Signs initiative?
+hosp_cat<-c("Under 20", "20-49","50-99", "100+")
+n<-as.numeric(c(2,2,7,6))
 hosp<-cbind(hosp_cat,n)
 hosp<-as.data.frame(hosp)
 hosp$n<-as.numeric(as.character(hosp$n))
 hosp_sum<-sum(hosp$n)
 
-hosp$percent<-hosp$n/hosp_sum
+hosp$percent<-round((hosp$n/hosp_sum)*100,digits=1)
+hosp$percent_lab <- paste(hosp$percent,"%", sep="")
 
-pdf("hospital counts by NICU Level.pdf",width=7,height=5)
+
+hosp$hosp_cat <- factor(hosp$hosp_cat, levels=c("Under 20", "20-49","50-99", "100+"))
+
+hosp$pos <- (cumsum(hosp$percent)-hosp$percent/2)  #calculate label position
+
+
+pdf("number of nurses educated.pdf",width=7,height=5)
 c <- ggplot(hosp, aes(x=factor(1), y=as.numeric(n),fill=factor(hosp_cat),label=percent))
 c<-c+geom_bar(stat="identity",width=1,position="fill")
 c <-c + coord_polar(theta="y")
-c<-c+geom_text(aes(x=factor(1), y=percent, label=percent,ymax=percent),position=position_fill(width=1))
+c<-c+geom_text(aes(x=factor(1), y=percent, label=percent_lab),position=position_fill(vjust = 0.5)) + ylab("n = 17")
+c <- c + scale_fill_discrete(name="Nurses Educated")
+c <- c + theme(axis.text = element_blank(),axis.ticks = element_blank(), panel.grid  = element_blank(),  axis.title.y = element_blank())
 c
 dev.off()
 
 
-#Location of Triage
-hosp_cat<-c("Separate triage intake room", "Triage evaluation area","Same room as where labor and birth occurs", "Other")
-n<-as.numeric(c(7,12,3,1))
+
+#Currently, does your hospital use a standard checklist of topics to discuss related to signs and symptoms of postpartum complications?
+hosp_cat<-c("Yes", "No")
+n<-as.numeric(c(12,5))
 hosp<-cbind(hosp_cat,n)
 hosp<-as.data.frame(hosp)
 hosp$n<-as.numeric(as.character(hosp$n))
 hosp_sum<-sum(hosp$n)
 
-hosp$percent<-hosp$n/hosp_sum
+hosp$percent<-round((hosp$n/hosp_sum)*100,digits=1)
+hosp$percent_lab <- paste(hosp$percent,"%", sep="")
 
-pdf("Triage area.pdf",width=7,height=5)
+
+hosp$hosp_cat <- factor(hosp$hosp_cat, levels=c("Yes", "No"))
+
+hosp$pos <- (cumsum(hosp$percent)-hosp$percent/2)  #calculate label position
+
+
+pdf("standardized checklist.pdf",width=7,height=5)
 c <- ggplot(hosp, aes(x=factor(1), y=as.numeric(n),fill=factor(hosp_cat),label=percent))
 c<-c+geom_bar(stat="identity",width=1,position="fill")
 c <-c + coord_polar(theta="y")
-c<-c+geom_text(aes(x=factor(1), y=percent, label=percent,ymax=percent),position=position_fill(width=1))
+c<-c+geom_text(aes(x=factor(1), y=percent, label=percent_lab),position=position_fill(vjust = 0.5)) + ylab("n = 17")
+c <- c + scale_fill_discrete(name="Use a standard checklist?")
+c <- c + theme(axis.text = element_blank(),axis.ticks = element_blank(), panel.grid  = element_blank(),  axis.title.y = element_blank())
 c
 dev.off()
 
 
 #EMR
-
-hosp_cat<-c("Cerner", "Epic","CPN (GE)", "Other")
-n<-as.numeric(c(2,15,5,1))
+hosp_cat<-c("Cerner", "CPN", "Epic (Stork)", "Other")
+n<-as.numeric(c(3,1, 4, 10))
 hosp<-cbind(hosp_cat,n)
 hosp<-as.data.frame(hosp)
 hosp$n<-as.numeric(as.character(hosp$n))
 hosp_sum<-sum(hosp$n)
 
-hosp$percent<-hosp$n/hosp_sum
+hosp$percent<-round((hosp$n/hosp_sum)*100,digits=1)
+hosp$percent_lab <- paste(hosp$percent,"%", sep="")
+
+
+hosp$hosp_cat <- factor(hosp$hosp_cat, levels=c("Cerner", "CPN", "Epic (Stork)", "Other"))
+
+hosp$pos <- (cumsum(hosp$percent)-hosp$percent/2)  #calculate label position
+
 
 pdf("EMR.pdf",width=7,height=5)
 c <- ggplot(hosp, aes(x=factor(1), y=as.numeric(n),fill=factor(hosp_cat),label=percent))
 c<-c+geom_bar(stat="identity",width=1,position="fill")
 c <-c + coord_polar(theta="y")
-c<-c+geom_text(aes(x=factor(1), y=percent, label=percent,ymax=percent),position=position_fill(width=1))
+c<-c+geom_text(aes(x=factor(1), y=percent, label=percent_lab),position=position_fill(vjust = 0.5)) + ylab("n = 17")
+c <- c + scale_fill_discrete(name="EMR")
+c <- c + theme(axis.text = element_blank(),axis.ticks = element_blank(), panel.grid  = element_blank(),  axis.title.y = element_blank())
 c
 dev.off()
+
